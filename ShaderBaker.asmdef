@@ -1,0 +1,18 @@
+{
+    "name": "ShaderBaker",
+    "rootNamespace": "",
+    "references": [
+        "GUID:be0903cd8e1546f498710afdc59db5eb",
+        "GUID:776d03a35f1b52c4a9aed9f56d7b4229",
+        "GUID:ade7125e800904674ba0c115208f7ed5"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -17,6 +17,6 @@ MonoBehaviour:
   BaseColor: 1
   Normal: 1
   Metalic: 1
-  Smoothness: 0
-  Emission: 0
-  AmbientOcclusion: 0
+  Smoothness: 1
+  Emission: 1
+  AmbientOcclusion: 1

@@ -73,47 +73,24 @@ namespace ShaderGraphBaker
                 }
                 if (Metalic)
                 {
-                    Edge metalicInputEdge = shaderGraphParser.GetEdge(BlockFields.SurfaceDescription.Metallic, PutType.Input);
-                    if (metalicInputEdge != null)
-                    {
-                        shaderGraphParser.RemoveEdge(baseColorInputEdge);
-                        Edge metalicOutputToBaseColorInput = new Edge()
-                        {
-                            OutputSlot = metalicInputEdge.OutputSlot,
-                            InputSlot = baseColorInputEdge.InputSlot
-                        };
-                        shaderGraphParser.CreateEdge(metalicOutputToBaseColorInput);
-                        shaderGraphParser.SaveTempShader();
-                        shaderGraphParser.RenderToFile(Resolution, BlockFields.SurfaceDescription.Metallic.name, useTempShader: true);
-                        shaderGraphParser.RemoveTempShader();
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"There is no {BlockFields.SurfaceDescription.Metallic.name} assigned to this shader.");
-                    }
+                    BlockFieldDescriptor targetBlockField = BlockFields.SurfaceDescription.Metallic;
+                    BakeTargetSlot(shaderGraphParser, baseColorInputEdge, targetBlockField);
                 }
-                // if (Smoothness)
-                // {
-                //     Edge smoothnessInputEdge = shaderGraphParser.GetEdge(BlockFields.SurfaceDescription.Smoothness, PutType.Input);
-                //     shaderGraphParser.RemoveEdge(baseColorInputEdge);
-                //     shaderGraphParser.CreateEdge(smoothnessInputEdge.OutputSlot, baseColorInputEdge.InputSlot);
-                //     shaderGraphParser.SaveTempShader();
-                // }
-                // if (Emission)
-                // {
-                //     Edge emissionInputEdge = shaderGraphParser.GetEdge(BlockFields.SurfaceDescription.Emission, PutType.Input);
-                //     shaderGraphParser.RemoveEdge(baseColorInputEdge);
-                //     shaderGraphParser.CreateEdge(emissionInputEdge.OutputSlot, baseColorInputEdge.InputSlot);
-                //     shaderGraphParser.SaveTempShader();
-                // }
-                // if (AmbientOcclusion)
-                // {
-                //     Edge aoInputEdge = shaderGraphParser.GetEdge(BlockFields.SurfaceDescription.Occlusion, PutType.Input);
-                //     shaderGraphParser.RemoveEdge(baseColorInputEdge);
-                //     shaderGraphParser.CreateEdge(aoInputEdge.OutputSlot, baseColorInputEdge.InputSlot);
-                //     shaderGraphParser.SaveTempShader();
-                // }
-
+                if (Smoothness)
+                {
+                    BlockFieldDescriptor targetBlockField = BlockFields.SurfaceDescription.Smoothness;
+                    BakeTargetSlot(shaderGraphParser, baseColorInputEdge, targetBlockField);
+                }
+                if (Emission)
+                {
+                    BlockFieldDescriptor targetBlockField = BlockFields.SurfaceDescription.Emission;
+                    BakeTargetSlot(shaderGraphParser, baseColorInputEdge, targetBlockField);
+                }
+                if (AmbientOcclusion)
+                {
+                    BlockFieldDescriptor targetBlockField = BlockFields.SurfaceDescription.Occlusion;
+                    BakeTargetSlot(shaderGraphParser, baseColorInputEdge, targetBlockField);
+                }
                 AssetDatabase.Refresh();
             }
             else
@@ -123,6 +100,27 @@ namespace ShaderGraphBaker
             return;
         }
 
+        private void BakeTargetSlot(ShaderGraphParser shaderGraphParser, Edge baseColorInputEdge, BlockFieldDescriptor targetBlockField)
+        {
+            Edge targetInputEdge = shaderGraphParser.GetEdge(targetBlockField, PutType.Input);
+            if (targetInputEdge != null)
+            {
+                shaderGraphParser.RemoveEdge(baseColorInputEdge);
+                Edge targetOutputToBaseColorInput = new Edge()
+                {
+                    OutputSlot = targetInputEdge.OutputSlot,
+                    InputSlot = baseColorInputEdge.InputSlot
+                };
+                shaderGraphParser.CreateEdge(targetOutputToBaseColorInput);
+                shaderGraphParser.SaveTempShader();
+                shaderGraphParser.RenderToFile(Resolution, targetBlockField.name, useTempShader: true);
+                shaderGraphParser.RemoveTempShader();
+            }
+            else
+            {
+                Debug.LogWarning($"There is no {targetBlockField.name} assigned to this shader.");
+            }
+        }
 
         private void SwapAndBake(string targetKey, string textureSuffix, int pass = -1)
         {

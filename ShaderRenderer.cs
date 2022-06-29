@@ -25,78 +25,101 @@ namespace ShaderGraphBaker
         {
             var shaderGraphParser = new ShaderGraphParser(_shader);
             Edge baseColorInputEdge = shaderGraphParser.GetEdge(BlockFields.SurfaceDescription.BaseColor, PutType.Input);
-            if (BaseColor)
+            if (baseColorInputEdge != null)
             {
-                shaderGraphParser.RenderToFile(Resolution, BlockFields.SurfaceDescription.BaseColor.name);
-            }
-            if (Normal)
-            {
-                Edge normalTSInputEdge = shaderGraphParser.GetEdge(BlockFields.SurfaceDescription.NormalTS, PutType.Input);
-                shaderGraphParser.RemoveEdge(baseColorInputEdge);
-                RawNormalMapSerialized rawNormalNode = new RawNormalMapSerialized();
-                shaderGraphParser.AddNode(rawNormalNode);
-                Edge normalResultOutputToRawNormal = new Edge()
+                if (BaseColor)
                 {
-                    InputSlot = new PutSlot()
-                    {
-                        Node = rawNormalNode.Node,
-                        SlotId = rawNormalNode.SlotIDs[1]
-                    },
-                    OutputSlot = normalTSInputEdge.OutputSlot
-                };
-                Edge rawOutputToBaseColorInput = new Edge()
+                    shaderGraphParser.RenderToFile(Resolution, BlockFields.SurfaceDescription.BaseColor.name);
+                }
+                if (Normal)
                 {
-                    InputSlot = baseColorInputEdge.InputSlot,
-                    OutputSlot = new PutSlot()
+                    Edge normalTSInputEdge = shaderGraphParser.GetEdge(BlockFields.SurfaceDescription.NormalTS, PutType.Input);
+                    if (normalTSInputEdge != null)
                     {
-                        Node = rawNormalNode.Node,
-                        SlotId = rawNormalNode.SlotIDs[0]
+                        shaderGraphParser.RemoveEdge(baseColorInputEdge);
+                        RawNormalMapSerialized rawNormalNode = new RawNormalMapSerialized();
+                        shaderGraphParser.AddNode(rawNormalNode);
+                        Edge normalResultOutputToRawNormal = new Edge()
+                        {
+                            InputSlot = new PutSlot()
+                            {
+                                Node = rawNormalNode.Node,
+                                SlotId = rawNormalNode.SlotIDs[1]
+                            },
+                            OutputSlot = normalTSInputEdge.OutputSlot
+                        };
+                        Edge rawOutputToBaseColorInput = new Edge()
+                        {
+                            InputSlot = baseColorInputEdge.InputSlot,
+                            OutputSlot = new PutSlot()
+                            {
+                                Node = rawNormalNode.Node,
+                                SlotId = rawNormalNode.SlotIDs[0]
+                            }
+                        };
+                        shaderGraphParser.RemoveEdge(normalTSInputEdge);
+                        shaderGraphParser.CreateEdge(normalResultOutputToRawNormal);
+                        shaderGraphParser.CreateEdge(rawOutputToBaseColorInput);
+                        shaderGraphParser.SaveTempShader();
+                        var fullPath = shaderGraphParser.RenderToFile(Resolution, BlockFields.SurfaceDescription.NormalTS.name, useTempShader: true);
+                        AssetDatabase.Refresh();
+                        FixNormalImportSettings(fullPath);
+                        shaderGraphParser.RemoveTempShader();
                     }
-                };
-                shaderGraphParser.RemoveEdge(normalTSInputEdge);
-                shaderGraphParser.CreateEdge(normalResultOutputToRawNormal);
-                shaderGraphParser.CreateEdge(rawOutputToBaseColorInput);
-                shaderGraphParser.SaveTempShader();
-                shaderGraphParser.RenderToFile(Resolution, BlockFields.SurfaceDescription.NormalTS.name, useTempShader: true);
-                shaderGraphParser.RemoveTempShader();
-            }
-            if (Metalic)
-            {
-                Edge metalicInputEdge = shaderGraphParser.GetEdge(BlockFields.SurfaceDescription.Metallic, PutType.Input);
-                shaderGraphParser.RemoveEdge(baseColorInputEdge);
-                Edge metalicOutputToBaseColorInput = new Edge()
+                    else
+                    {
+                        Debug.LogWarning($"There is no {BlockFields.SurfaceDescription.NormalTS.name} assigned to this shader.");
+                    }
+                }
+                if (Metalic)
                 {
-                    OutputSlot = metalicInputEdge.OutputSlot,
-                    InputSlot = baseColorInputEdge.InputSlot
-                };
-                shaderGraphParser.CreateEdge(metalicOutputToBaseColorInput);
-                shaderGraphParser.SaveTempShader();
-                shaderGraphParser.RenderToFile(Resolution, BlockFields.SurfaceDescription.Metallic.name, useTempShader: true);
-                shaderGraphParser.RemoveTempShader();
-            }
-            // if (Smoothness)
-            // {
-            //     Edge smoothnessInputEdge = shaderGraphParser.GetEdge(BlockFields.SurfaceDescription.Smoothness, PutType.Input);
-            //     shaderGraphParser.RemoveEdge(baseColorInputEdge);
-            //     shaderGraphParser.CreateEdge(smoothnessInputEdge.OutputSlot, baseColorInputEdge.InputSlot);
-            //     shaderGraphParser.SaveTempShader();
-            // }
-            // if (Emission)
-            // {
-            //     Edge emissionInputEdge = shaderGraphParser.GetEdge(BlockFields.SurfaceDescription.Emission, PutType.Input);
-            //     shaderGraphParser.RemoveEdge(baseColorInputEdge);
-            //     shaderGraphParser.CreateEdge(emissionInputEdge.OutputSlot, baseColorInputEdge.InputSlot);
-            //     shaderGraphParser.SaveTempShader();
-            // }
-            // if (AmbientOcclusion)
-            // {
-            //     Edge aoInputEdge = shaderGraphParser.GetEdge(BlockFields.SurfaceDescription.Occlusion, PutType.Input);
-            //     shaderGraphParser.RemoveEdge(baseColorInputEdge);
-            //     shaderGraphParser.CreateEdge(aoInputEdge.OutputSlot, baseColorInputEdge.InputSlot);
-            //     shaderGraphParser.SaveTempShader();
-            // }
+                    Edge metalicInputEdge = shaderGraphParser.GetEdge(BlockFields.SurfaceDescription.Metallic, PutType.Input);
+                    if (metalicInputEdge != null)
+                    {
+                        shaderGraphParser.RemoveEdge(baseColorInputEdge);
+                        Edge metalicOutputToBaseColorInput = new Edge()
+                        {
+                            OutputSlot = metalicInputEdge.OutputSlot,
+                            InputSlot = baseColorInputEdge.InputSlot
+                        };
+                        shaderGraphParser.CreateEdge(metalicOutputToBaseColorInput);
+                        shaderGraphParser.SaveTempShader();
+                        shaderGraphParser.RenderToFile(Resolution, BlockFields.SurfaceDescription.Metallic.name, useTempShader: true);
+                        shaderGraphParser.RemoveTempShader();
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"There is no {BlockFields.SurfaceDescription.Metallic.name} assigned to this shader.");
+                    }
+                }
+                // if (Smoothness)
+                // {
+                //     Edge smoothnessInputEdge = shaderGraphParser.GetEdge(BlockFields.SurfaceDescription.Smoothness, PutType.Input);
+                //     shaderGraphParser.RemoveEdge(baseColorInputEdge);
+                //     shaderGraphParser.CreateEdge(smoothnessInputEdge.OutputSlot, baseColorInputEdge.InputSlot);
+                //     shaderGraphParser.SaveTempShader();
+                // }
+                // if (Emission)
+                // {
+                //     Edge emissionInputEdge = shaderGraphParser.GetEdge(BlockFields.SurfaceDescription.Emission, PutType.Input);
+                //     shaderGraphParser.RemoveEdge(baseColorInputEdge);
+                //     shaderGraphParser.CreateEdge(emissionInputEdge.OutputSlot, baseColorInputEdge.InputSlot);
+                //     shaderGraphParser.SaveTempShader();
+                // }
+                // if (AmbientOcclusion)
+                // {
+                //     Edge aoInputEdge = shaderGraphParser.GetEdge(BlockFields.SurfaceDescription.Occlusion, PutType.Input);
+                //     shaderGraphParser.RemoveEdge(baseColorInputEdge);
+                //     shaderGraphParser.CreateEdge(aoInputEdge.OutputSlot, baseColorInputEdge.InputSlot);
+                //     shaderGraphParser.SaveTempShader();
+                // }
 
-            AssetDatabase.Refresh();
+                AssetDatabase.Refresh();
+            }
+            else
+            {
+                Debug.LogWarning($"There is no {BlockFields.SurfaceDescription.BaseColor.name} assigned to this shader. Please make sure to add at lease a solid color to {BlockFields.SurfaceDescription.BaseColor.name}");
+            }
             return;
         }
 
@@ -258,23 +281,18 @@ namespace ShaderGraphBaker
 
             File.WriteAllBytes(FilePath + "/" + fileName, png);
         }
-        private void FixNormalImportSettings(string textureSuffix)
+        private void FixNormalImportSettings(string fullPath)
         {
-            string filePath = Path.GetDirectoryName(AssetDatabase.GetAssetPath(_shader));
-            string targetTextureName = GetShaderName() + textureSuffix + ".png";
-            string savePath = Path.Combine(filePath, targetTextureName);
-
-            Texture2D newTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(savePath);
+            Texture2D newTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(fullPath);
             if (newTexture != null)
             {
                 EditorUtility.FocusProjectWindow();
                 // Selection.activeObject = newTexture;
                 // EditorGUIUtility.PingObject(newTexture);
-                TextureImporter importer = (TextureImporter)AssetImporter.GetAtPath(savePath);
+                TextureImporter importer = (TextureImporter)AssetImporter.GetAtPath(fullPath);
                 importer.textureType = TextureImporterType.NormalMap;
                 importer.textureFormat = TextureImporterFormat.DXT5;
                 importer.SaveAndReimport();
-                AssetDatabase.Refresh();
             }
         }
     }

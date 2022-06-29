@@ -121,7 +121,7 @@ namespace ShaderGraphBaker
         }
 
 
-        public void RenderToFile(Vector2Int resolution, string suffix, int pass = -1, bool useTempShader = false)
+        public string RenderToFile(Vector2Int resolution, string suffix, int pass = -1, bool useTempShader = false)
         {
             RenderTexture m_renderTexture = RenderTexture.GetTemporary(resolution.x, resolution.y);
             Texture2D texture = new Texture2D(resolution.x, resolution.y, TextureFormat.RGBA32, false);
@@ -133,10 +133,11 @@ namespace ShaderGraphBaker
             RenderTexture.active = null;
             RenderTexture.ReleaseTemporary(m_renderTexture);
 
-            WriteToFile(suffix, texture);
+            string fullPath = WriteToFile(suffix, texture);
 
             Object.DestroyImmediate(mat);
             Object.DestroyImmediate(texture);
+            return fullPath;
         }
 
 
@@ -275,13 +276,14 @@ namespace ShaderGraphBaker
             return -1;
         }
 
-        private void WriteToFile(string suffix, Texture2D texture)
+        private string WriteToFile(string suffix, Texture2D texture)
         {
             string fileName = ShaderName + "_" + suffix + ".png";
             string path = Path.GetDirectoryName(ShaderPath);
             string fullPath = Path.Combine(path, fileName);
             byte[] png = texture.EncodeToPNG();
             File.WriteAllBytes(fullPath, png);
+            return fullPath;
         }
 
         private static string[] SplitedJson(string shaderGraphText = null)

@@ -16,7 +16,7 @@ MonoBehaviour:
   Resolution: {x: 1024, y: 1024}
   BaseColor: 1
   Normal: 1
-  Metalic: 0
+  Metalic: 1
   Smoothness: 0
   Emission: 0
   AmbientOcclusion: 0

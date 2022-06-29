@@ -126,7 +126,6 @@ namespace ShaderGraphBaker
             RenderTexture m_renderTexture = RenderTexture.GetTemporary(resolution.x, resolution.y);
             Texture2D texture = new Texture2D(resolution.x, resolution.y, TextureFormat.RGBA32, false);
             Material mat = CreateMaterial(useTempShader);
-            Debug.Log($"Material was created using {mat.shader.name} shader.");
             Graphics.Blit(null, m_renderTexture, mat, pass);
             //transfer image from rendertexture to texture
             RenderTexture.active = m_renderTexture;
@@ -155,7 +154,6 @@ namespace ShaderGraphBaker
                     {
                         JToken edgeToken = JToken.Parse(JsonConvert.SerializeObject(edge));
                         ((JArray)allEdgeData).Add(edgeToken);
-                        Debug.Log("EdgeAdded : " + allEdgeData);
                     }
                     m_NewShaderData += shaderData.ToString() + "\n\n";
                 }

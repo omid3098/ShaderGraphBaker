@@ -58,15 +58,22 @@ namespace ShaderGraphBaker
                 shaderGraphParser.CreateEdge(rawOutputToBaseColorInput);
                 shaderGraphParser.SaveTempShader();
                 shaderGraphParser.RenderToFile(Resolution, BlockFields.SurfaceDescription.NormalTS.name, useTempShader: true);
-                // shaderGraphParser.RemoveTempShader();
+                shaderGraphParser.RemoveTempShader();
             }
-            // if (Metalic)
-            // {
-            //     Edge metalicInputEdge = shaderGraphParser.GetEdge(BlockFields.SurfaceDescription.Metallic, PutType.Input);
-            //     shaderGraphParser.RemoveEdge(baseColorInputEdge);
-            //     shaderGraphParser.CreateEdge(metalicInputEdge.OutputSlot, baseColorInputEdge.InputSlot);
-            //     shaderGraphParser.SaveTempShader();
-            // }
+            if (Metalic)
+            {
+                Edge metalicInputEdge = shaderGraphParser.GetEdge(BlockFields.SurfaceDescription.Metallic, PutType.Input);
+                shaderGraphParser.RemoveEdge(baseColorInputEdge);
+                Edge metalicOutputToBaseColorInput = new Edge()
+                {
+                    OutputSlot = metalicInputEdge.OutputSlot,
+                    InputSlot = baseColorInputEdge.InputSlot
+                };
+                shaderGraphParser.CreateEdge(metalicOutputToBaseColorInput);
+                shaderGraphParser.SaveTempShader();
+                shaderGraphParser.RenderToFile(Resolution, BlockFields.SurfaceDescription.Metallic.name, useTempShader: true);
+                shaderGraphParser.RemoveTempShader();
+            }
             // if (Smoothness)
             // {
             //     Edge smoothnessInputEdge = shaderGraphParser.GetEdge(BlockFields.SurfaceDescription.Smoothness, PutType.Input);

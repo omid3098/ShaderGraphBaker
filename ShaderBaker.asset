@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _shader: {fileID: -6465566751694194690, guid: 060b26076cba95b419201fefeef2f767, type: 3}
   Resolution: {x: 1024, y: 1024}
-  BaseColor: 0
+  BaseColor: 1
   Normal: 1
   Metalic: 0
   Smoothness: 0

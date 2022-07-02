@@ -251,7 +251,7 @@
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "0d35109dd6334225b9a6599b1a39cde5",
     "m_Id": 0,
-    "m_DisplayName": "Displacement",
+    "m_DisplayName": "In",
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Out",
@@ -416,10 +416,10 @@
     "m_Guid": {
         "m_GuidSerialized": "621b57d7-aa61-4adb-ada4-daffcacb2677"
     },
-    "m_Name": "Displacement",
+    "m_Name": "In",
     "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "Displacement",
-    "m_DefaultReferenceName": "_Displacement",
+    "m_RefNameGeneratedByDisplayName": "In",
+    "m_DefaultReferenceName": "_In",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
     "m_UseCustomSlotLabel": false,

@@ -121,9 +121,11 @@ namespace ShaderGraphBaker
         }
 
 
-        public string RenderToFile(Vector2Int resolution, string suffix, int pass = -1, bool useTempShader = false)
+        public string RenderToFile(Vector2Int resolution, string suffix, RenderTextureReadWrite colorSpace = RenderTextureReadWrite.Linear, int pass = -1, bool useTempShader = false)
         {
-            RenderTexture m_renderTexture = RenderTexture.GetTemporary(resolution.x, resolution.y);
+            // RenderTexture m_renderTexture = RenderTexture.GetTemporary(resolution.x, resolution.y);
+            // RenderTexture m_renderTexture = new RenderTexture(resolution.x, resolution.y, rt.depth, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
+            RenderTexture m_renderTexture = new RenderTexture(resolution.x, resolution.y, 24, RenderTextureFormat.ARGB32, colorSpace);
             Texture2D texture = new Texture2D(resolution.x, resolution.y, TextureFormat.RGBA32, false);
             Material mat = CreateMaterial(useTempShader);
             Graphics.Blit(null, m_renderTexture, mat, pass);
@@ -131,10 +133,11 @@ namespace ShaderGraphBaker
             RenderTexture.active = m_renderTexture;
             texture.ReadPixels(new Rect(Vector2.zero, resolution), 0, 0);
             RenderTexture.active = null;
-            RenderTexture.ReleaseTemporary(m_renderTexture);
+            // RenderTexture.ReleaseTemporary(m_renderTexture);
 
             string fullPath = WriteToFile(suffix, texture);
 
+            Object.DestroyImmediate(m_renderTexture);
             Object.DestroyImmediate(mat);
             Object.DestroyImmediate(texture);
             return fullPath;
@@ -188,10 +191,23 @@ namespace ShaderGraphBaker
             }
             m_TempShaderString = m_NewShaderData;
         }
-
-        public Edge GetEdge(BlockFieldDescriptor blockFieldDescriptor, PutType putType)
+        public string GetIDByName(string nodeName)
         {
-            string blockFieldID = GetBlockFieldID(blockFieldDescriptor);
+            string t = GetSlotID(JKeys.NodeNameKey, nodeName);
+            return t;
+        }
+
+        public Edge GetEdgeByNodeName(string NodeName, PutType putType)
+        {
+            return GetEdgeByNodeID(GetIDByName(NodeName), putType);
+        }
+        public Edge GetEdgeByBlockField(BlockFieldDescriptor blockFieldDescriptor, PutType putType)
+        {
+            return GetEdgeByNodeID(GetBlockFieldID(blockFieldDescriptor), putType);
+        }
+
+        private static Edge GetEdgeByNodeID(string nodeID, PutType putType)
+        {
             string[] m_splittedJson = SplitedJson();
             for (int i = 0; i < m_splittedJson.Length; i++)
             {
@@ -211,13 +227,13 @@ namespace ShaderGraphBaker
                             switch (putType)
                             {
                                 case PutType.Input:
-                                    if (edge.InputSlot.Node.Id == blockFieldID)
+                                    if (edge.InputSlot.Node.Id == nodeID)
                                     {
                                         return edge;
                                     }
                                     break;
                                 case PutType.Output:
-                                    if (edge.OutputSlot.Node.Id == blockFieldID)
+                                    if (edge.OutputSlot.Node.Id == nodeID)
                                     {
                                         return edge;
                                     }
@@ -231,6 +247,7 @@ namespace ShaderGraphBaker
             }
             return null;
         }
+
         internal int GetEdgeIndex(BlockFieldDescriptor blockFieldDescriptor, PutType putType)
         {
             string blockFieldID = GetBlockFieldID(blockFieldDescriptor);

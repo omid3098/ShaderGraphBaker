@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26bc9d9236b3da1458053587f8e1f696, type: 3}
   m_Name: ShaderBaker
   m_EditorClassIdentifier: 
-  _shader: {fileID: -6465566751694194690, guid: 060b26076cba95b419201fefeef2f767, type: 3}
+  _shader: {fileID: -6465566751694194690, guid: 1d5f831c9f6cde04789ced0dd4fe7c9f, type: 3}
   Resolution: {x: 1024, y: 1024}
-  BaseColor: 1
+  BaseColor: 0
   Normal: 1
-  Metalic: 1
-  Smoothness: 1
-  Emission: 1
-  AmbientOcclusion: 1
+  Metalic: 0
+  Smoothness: 0
+  Emission: 0
+  AmbientOcclusion: 0
+  Displacement: 0

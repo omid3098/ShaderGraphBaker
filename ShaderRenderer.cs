@@ -19,21 +19,22 @@ namespace ShaderGraphBaker
         [SerializeField] bool Smoothness;
         [SerializeField] bool Emission;
         [SerializeField] bool AmbientOcclusion;
+        [SerializeField] bool Displacement;
 
         [Button]
         void BakeTexture()
         {
             var shaderGraphParser = new ShaderGraphParser(_shader);
-            Edge baseColorInputEdge = shaderGraphParser.GetEdge(BlockFields.SurfaceDescription.BaseColor, PutType.Input);
+            Edge baseColorInputEdge = shaderGraphParser.GetEdgeByBlockField(BlockFields.SurfaceDescription.BaseColor, PutType.Input);
             if (baseColorInputEdge != null)
             {
                 if (BaseColor)
                 {
-                    shaderGraphParser.RenderToFile(Resolution, BlockFields.SurfaceDescription.BaseColor.name);
+                    shaderGraphParser.RenderToFile(Resolution, BlockFields.SurfaceDescription.BaseColor.name, colorSpace: RenderTextureReadWrite.sRGB);
                 }
                 if (Normal)
                 {
-                    Edge normalTSInputEdge = shaderGraphParser.GetEdge(BlockFields.SurfaceDescription.NormalTS, PutType.Input);
+                    Edge normalTSInputEdge = shaderGraphParser.GetEdgeByBlockField(BlockFields.SurfaceDescription.NormalTS, PutType.Input);
                     if (normalTSInputEdge != null)
                     {
                         shaderGraphParser.RemoveEdge(baseColorInputEdge);
@@ -91,6 +92,28 @@ namespace ShaderGraphBaker
                     BlockFieldDescriptor targetBlockField = BlockFields.SurfaceDescription.Occlusion;
                     BakeTargetSlot(shaderGraphParser, baseColorInputEdge, targetBlockField);
                 }
+                if (Displacement)
+                {
+                    Edge displacementEdgeInput = shaderGraphParser.GetEdgeByNodeName(NodeKeys.Displacement, PutType.Input);
+                    if (displacementEdgeInput != null)
+                    {
+                        shaderGraphParser.RemoveEdge(baseColorInputEdge);
+                        Edge targetOutputToBaseColorInput = new Edge()
+                        {
+                            OutputSlot = displacementEdgeInput.OutputSlot,
+                            InputSlot = baseColorInputEdge.InputSlot
+                        };
+                        shaderGraphParser.CreateEdge(targetOutputToBaseColorInput);
+                        shaderGraphParser.SaveTempShader();
+                        shaderGraphParser.RenderToFile(Resolution, NodeKeys.Displacement, useTempShader: true);
+                        shaderGraphParser.RemoveTempShader();
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"There is no {NodeKeys.Displacement} assigned to this shader. Make sure you have a Displacement Node in your graph");
+                    }
+                    Debug.Log($"Node id for displacement is {displacementEdgeInput.OutputSlot.Node.Id}");
+                }
                 AssetDatabase.Refresh();
             }
             else
@@ -102,7 +125,7 @@ namespace ShaderGraphBaker
 
         private void BakeTargetSlot(ShaderGraphParser shaderGraphParser, Edge baseColorInputEdge, BlockFieldDescriptor targetBlockField)
         {
-            Edge targetInputEdge = shaderGraphParser.GetEdge(targetBlockField, PutType.Input);
+            Edge targetInputEdge = shaderGraphParser.GetEdgeByBlockField(targetBlockField, PutType.Input);
             if (targetInputEdge != null)
             {
                 shaderGraphParser.RemoveEdge(baseColorInputEdge);

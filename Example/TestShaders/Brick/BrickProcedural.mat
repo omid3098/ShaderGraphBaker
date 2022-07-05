@@ -94,6 +94,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _OverlayTexture:
+        m_Texture: {fileID: 2800000, guid: dac29ba2a69c87e4aba4b7efcadb785e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -164,7 +168,7 @@ Material:
     - _DepthOffsetEnable: 0
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _Displacement: 0.06
+    - _Displacement: 0.077
     - _DoubleSidedEnable: 0
     - _DoubleSidedGIMode: 0
     - _DoubleSidedNormalMode: 2
@@ -179,6 +183,7 @@ Material:
     - _NormalMapStrenght: 0.65
     - _OcclusionStrength: 1
     - _OpaqueCullMode: 2
+    - _OverlayTextureOpacity: 0
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
@@ -230,6 +235,8 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BetweenColor: {r: 0.14899996, g: 0.14899996, b: 0.14899996, a: 1}
+    - _BrickColor: {r: 0.39099997, g: 0.20381516, b: 0.12981197, a: 1}
     - _BrickSize: {r: 15, g: 30, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}

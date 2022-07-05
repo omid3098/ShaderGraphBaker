@@ -1,5 +1,5 @@
 # ShaderGraphBaker
-Use ShaderGraph as a substance designer alternative!
+Use ShaderGraph as a texture creation tool!
 
 Left: Procedural brick shader. </br>
 Right: Baked shader into 1024 textures.

@@ -4,6 +4,7 @@ namespace ShaderGraphBaker
     {
         public const string ObjectId = "m_ObjectId";
         public const string NodeNameKey = "m_Name";
+        public const string PropertyIDKey = "m_PropertyIds";
         public const string DisplayNameKey = "m_DisplayName";
         public const string EdgesKey = "m_Edges";
         public const string NodeKey = "m_Node";
@@ -15,6 +16,7 @@ namespace ShaderGraphBaker
     }
     public static class NodeKeys
     {
-        public const string Displacement = "Displacement";
+        public const string Displacement = "HeightToDisplacement";
+        public const string DisplacementFileName = "Displacement";
     }
 }

@@ -98,6 +98,7 @@ namespace ShaderGraphBaker
             return null;
         }
 
+
         internal void RemoveTempShader()
         {
             string tempShaderFullPath = Path.Combine(ShaderDirectory, TempShaderName);
@@ -201,11 +202,83 @@ namespace ShaderGraphBaker
         {
             return GetEdgeByNodeID(GetIDByName(NodeName), putType);
         }
+        public Edge GetEdgeByNodeName(string NodeName, PutType putType, int slotIndex)
+        {
+            return GetEdgeByNodeID(GetIDByName(NodeName), putType, slotIndex);
+        }
         public Edge GetEdgeByBlockField(BlockFieldDescriptor blockFieldDescriptor, PutType putType)
         {
             return GetEdgeByNodeID(GetBlockFieldID(blockFieldDescriptor), putType);
         }
+        private static long GetPropertyID(string nodeID, int propertyIndex)
+        {
+            string[] splittedJson = SplitedJson();
+            for (int i = 0; i < splittedJson.Length; i++)
+            {
+                JObject data = (JObject)JsonConvert.DeserializeObject(splittedJson[i]);
+                // find the json section with Base Color data
+                if (data != null)
+                {
+                    data.TryGetValue(JKeys.ObjectId, out JToken jsonKey);
+                    if (jsonKey != null && jsonKey.ToString() == nodeID)
+                    {
+                        data.TryGetValue(JKeys.PropertyIDKey, out JToken _propertyToken);
+                        if (_propertyToken != null)
+                        {
+                            JArray _propertyTokenArray = (JArray)_propertyToken;
+                            if (_propertyTokenArray.Count > propertyIndex)
+                            {
+                                return long.Parse(_propertyTokenArray[propertyIndex].ToString());
+                            }
+                        }
+                    }
+                }
+            }
+            return -1;
+        }
 
+        private static Edge GetEdgeByNodeID(string nodeID, PutType putType, int propertyIndex = 0)
+        {
+            string[] m_splittedJson = SplitedJson();
+            for (int i = 0; i < m_splittedJson.Length; i++)
+            {
+                JObject data = (JObject)JsonConvert.DeserializeObject(m_splittedJson[i]);
+                if (data != null)
+                {
+                    data.TryGetValue(JKeys.EdgesKey, out JToken allEdgeData);
+                    if (allEdgeData != null)
+                    {
+                        // We find all edge data that stores target blockFieldDescriptor
+                        // And because all BlockFieldDescriptors only have inputs, there is no need to check for 
+                        // separate input or output.
+                        for (int j = 0; j < ((JArray)allEdgeData).Count; j++)
+                        {
+                            Edge edge = JsonConvert.DeserializeObject<Edge>(allEdgeData[j].ToString());
+                            long _propertyID = GetPropertyID(nodeID, propertyIndex);
+                            // Lets find the edge that has base color ID and normalTS
+                            switch (putType)
+                            {
+                                case PutType.Input:
+                                    if (edge.InputSlot.Node.Id == nodeID && edge.InputSlot.SlotId == _propertyID)
+                                    {
+                                        return edge;
+                                    }
+                                    break;
+                                case PutType.Output:
+                                    if (edge.OutputSlot.Node.Id == nodeID && edge.InputSlot.SlotId == _propertyID)
+                                    {
+                                        return edge;
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
+        }
         private static Edge GetEdgeByNodeID(string nodeID, PutType putType)
         {
             string[] m_splittedJson = SplitedJson();

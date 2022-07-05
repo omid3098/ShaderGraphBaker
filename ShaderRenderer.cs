@@ -94,7 +94,7 @@ namespace ShaderGraphBaker
                 }
                 if (Displacement)
                 {
-                    Edge displacementEdgeInput = shaderGraphParser.GetEdgeByNodeName(NodeKeys.Displacement, PutType.Input);
+                    Edge displacementEdgeInput = shaderGraphParser.GetEdgeByNodeName(NodeKeys.Displacement, PutType.Input, 0);
                     if (displacementEdgeInput != null)
                     {
                         shaderGraphParser.RemoveEdge(baseColorInputEdge);
@@ -105,7 +105,7 @@ namespace ShaderGraphBaker
                         };
                         shaderGraphParser.CreateEdge(targetOutputToBaseColorInput);
                         shaderGraphParser.SaveTempShader();
-                        shaderGraphParser.RenderToFile(Resolution, NodeKeys.Displacement, useTempShader: true);
+                        shaderGraphParser.RenderToFile(Resolution, NodeKeys.DisplacementFileName, useTempShader: true);
                         shaderGraphParser.RemoveTempShader();
                     }
                     else

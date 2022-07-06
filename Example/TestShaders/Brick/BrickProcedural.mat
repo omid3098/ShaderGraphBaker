@@ -200,7 +200,7 @@ Material:
     - _Rotation: 0
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
-    - _Spacing: 2.08
+    - _Spacing: 0.56
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _StencilRef: 0
@@ -240,7 +240,7 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BetweenColor: {r: 0.14899996, g: 0.14899996, b: 0.14899996, a: 1}
     - _BrickColor: {r: 0.39099997, g: 0.20381516, b: 0.12981197, a: 1}
-    - _BrickSize: {r: 15, g: 30, b: 0, a: 0}
+    - _BrickSize: {r: 7, g: 30, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}

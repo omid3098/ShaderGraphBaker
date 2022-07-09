@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26bc9d9236b3da1458053587f8e1f696, type: 3}
   m_Name: ShaderBaker
   m_EditorClassIdentifier: 
-  _shader: {fileID: -6465566751694194690, guid: 665df67dd57c76e4696aec1d5c8bd792, type: 3}
+  _shader: {fileID: -6465566751694194690, guid: 213582805647c544aa9281163e466077, type: 3}
   Resolution: {x: 1024, y: 1024}
   BaseColor: 1
   Normal: 1

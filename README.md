@@ -9,6 +9,11 @@ Right: Baked shader into 1024 textures.
 
 ![image](https://user-images.githubusercontent.com/6388730/177318330-a83377f0-8646-452d-b5d5-7d7ae8cbe1df.png)
 
+Another example:
+
+![Procedural Bath Tile](https://user-images.githubusercontent.com/6388730/178087019-9c886a48-6b54-40ec-b585-4163076bcc0b.gif)
+
+
 Here is the article on [Medium](https://medium.com/@omid3098/using-unity-s-shadergraph-as-a-procedural-texture-creation-tool-54fc5836534e)
 
 ## How to contribute

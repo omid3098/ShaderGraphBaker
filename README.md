@@ -16,6 +16,11 @@ Another example:
 
 Here is the article on [Medium](https://medium.com/@omid3098/using-unity-s-shadergraph-as-a-procedural-texture-creation-tool-54fc5836534e)
 
+## Package dependencies
+Add to manifest.json in your unity project following packages:
+- "com.unity.nuget.newtonsoft-json": "3.0.2",
+- "com.dbrizov.naughtyattributes": "https://github.com/dbrizov/NaughtyAttributes.git#upm"
+
 ## How to contribute
 - I am trying to develop more custom nodes to be able to generate more complex procedural textures. feel free to add yours and send a PR.
 - Make a better custom window or implement sub-menus directly in ShaderGraph! 
